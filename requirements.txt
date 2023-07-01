@@ -1,0 +1,10 @@
+request
+django
+djangorestframework
+markdown
+pygments
+django-filter
+django-guardian
+django-rosetta
+django-cryptography
+python-dotenv
