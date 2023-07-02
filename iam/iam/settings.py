@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 import os
+from django.utils.translation import gettext_lazy as _ 
 
+CSRF_COOKIE_SECURE=False
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,29 +25,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8+si3_hv_dk+c$jtf_dzcs%zp7f1y0op@0-kc97+8*p$#(+@n-'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+EXTERNAL_HOSTS = ['127.0.0.1']
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.auth', # User
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Apps 
+    'usermanager',
     # Django Libraries
+    'corsheaders',
     'rosetta',
+    # Third party libraries
+    'tailwind',
     
 ]
 
 MIDDLEWARE = [
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,14 +61,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # Localization
 ]
+
+
+# CACHES 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": os.path.join(BASE_DIR, "cache"),
+    }
+}
+ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage',
 
 ROOT_URLCONF = 'iam.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,7 +124,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# Communication
+DEFAULT_FROM_EMAIL='webmaster@localhost'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -115,11 +137,26 @@ USE_I18N = True
 
 USE_TZ = True
 
+LANGUAGES = (
+    ('en', _('English')),
+    ('km', _('Khmer')),
+)
+LOCALE_PATHS = [
+    BASE_DIR / 'locale/',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
-STATIC_URL = 'static/'
+# Media files (User uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

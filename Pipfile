@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-request = "*"
+requests = "*"
 django = "*"
 djangorestframework = "*"
 markdown = "*"
@@ -14,6 +14,10 @@ django-guardian = "*"
 django-rosetta = "*"
 django-cryptography = "*"
 python-dotenv = "*"
+django-oauth-toolkit = "*"
+django-cors-headers = "*"
+reportlab = "*"
+django-tailwind = {extras = ["reload"], version = "*"}
 
 [dev-packages]
 
