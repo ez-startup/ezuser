@@ -1,0 +1,77 @@
+{% extends "oauth2_provider/base.html" %}
+
+{% load i18n %}
+{% block content %}
+<!-- Header -->
+<navbar class="block mb-10">
+    <div class="fixed top-0 left-0 w-full bg-gray-900 text-white py-2 px-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="rounded-full bg-yellow-500 w-3 h-3"></div>
+            <div class="rounded-full bg-red-500 w-3 h-3"></div>
+            <div class="rounded-full bg-green-500 w-3 h-3 cursor-pointer transition-all duration-500" onclick="toggleFullscreen();" title="View full screen"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="flex items-center space-x-2">
+                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+                <span class="text-sm">Menu</span>
+            </button>
+            <button class="flex items-center space-x-2">
+                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span class="text-sm">Add</span>
+            </button>
+            <button class="flex items-center space-x-2">
+                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m4 0h4m-4 0v6m0 0v6m0-6h-4m0-2h4M12 4v4m0 0v4m0-4h4m2 0h-6m0-2h6M4 6h4m2 0h6m-6 0v6m0 0v2m0 2v2m0-2h2m2 0h2m0-2v-2m0-2v-2m0 2h-2m-2 0H8m2 0H8m0 2v2m0 2v2m0-2h2m2 0h2m0-2v-2m0-2v-2m0 2h-2"></path>
+                </svg>
+                <span class="text-sm">Settings</span>
+            </button>
+        </div>
+    </div>
+</navbar>
+
+<div class="w-full flex justify-center justify-items-center">
+    <div class="w-fit">
+        <div class="border border-gray-500 md:mt-16 rounded-xl shadow-lg p-4 items-center bg-slate-200">
+            <form class="form-horizontal" method="post" action="{% block app-form-action-url %}{% url 'oauth2_provider:update' application.id %}{% endblock app-form-action-url %}">
+                <h3 class="block-center-heading">
+                    {% block app-form-title %}
+                        {% trans "Edit application" %} {{ application.name }}
+                    {% endblock app-form-title %}
+                </h3>
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="control-group {% if field.errors %}error{% endif %}">
+                        <label class="control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="controls">
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <span class="help-inline">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="control-group {% if form.non_field_errors %}error{% endif %}">
+                    {% for error in form.non_field_errors %}
+                        <span class="help-inline">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <hr class="my-4">
+                <div class="control-group">
+                    <div class="flex justify-between w-full">
+                        <a class="rounded-md px-4 py-2 hover:bg-gray-800 hover:text-slate-200 hover:shadow-md transition-colors duration-300 outline outline-offset-1 outline-gray-500" href="{% block app-form-back-url %}{% url "oauth2_provider:detail" application.id %}{% endblock app-form-back-url %}">
+                            {% trans "Go Back" %}
+                        </a>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-slate-100 rounded-md  hover:shadow-md hover:bg-blue-600 hover:text-slate-100 transition-colors duration-300 hover:outline hover:outline-offset-2 hover:outline-blue-800">{% trans "Save" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

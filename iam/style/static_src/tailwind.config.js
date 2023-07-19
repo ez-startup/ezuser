@@ -6,6 +6,11 @@
  */
 
 module.exports = {
+    variants: {
+        extend: {
+          fontFamily: ['responsive'],
+        },
+      },
     content: [
         /**
          * HTML. Paths to Django template files that will contain Tailwind CSS classes.
@@ -42,7 +47,11 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                "Inter": ['../../staticfiles/fonts/Inter/Inter-VariableFont_slnt,wght.ttf', 'sans-serif'],
+              },
+        },
     },
     plugins: [
         /**

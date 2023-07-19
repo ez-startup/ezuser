@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Manager - EZ Startup{% endblock %}
+
+{% block content %}
+<div class="container-xl p-5">
+    <div class="max-w-xs rounded overflow-hidden shadow-lg bg-white hover:scale-105 transition-transform duration-300 hover:bg-gradient-to-br from-teal-400 to-blue-500">
+        <img class="w-full" src="{{ image_test }}" alt="Product Image">
+        <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2">{{ products }}</div>
+            <p class="text-gray-700 text-base">{{ product_desc }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

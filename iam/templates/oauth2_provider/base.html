@@ -1,0 +1,36 @@
+<!-- templates/oauth2_provider/base.html -->
+{% load static tailwind_tags %}
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>{% block title %} {% translate "EZ Startup - Easy for Everyone" %}{% endblock %}</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% comment %} <rel rel="stylesheet" type="text/css" src="{% static "css/main.css" %}'> {% endcomment %}
+		{% tailwind_css %}
+        
+        {% block stylesheet %}
+           
+        {% endblock %}
+	</head>
+<body>
+    <main>
+    <!-- Custom content goes here -->
+    <section>
+    {% block content %}
+    {% endblock %}
+    </section>
+
+    <!-- Load other JavaScript files or additional tags -->
+    
+    <!-- Include the i18n JavaScript catalog -->
+    {% block script %}
+        <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    {% endblock %}
+</main>
+</body>
+</html>

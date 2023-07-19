@@ -1,0 +1,10 @@
+<!-- register_application.html -->
+{% extends "oauth2_provider/application_form.html" %}
+
+{% block extra_fields %}
+    <!-- Add or modify extra fields here -->
+    {{ block.super }}
+    <!-- Additional content -->
+    <h2>Hellow World</h2>
+    <p>I am new </p>
+{% endblock %}

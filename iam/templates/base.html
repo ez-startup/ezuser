@@ -1,20 +1,27 @@
 {% load static tailwind_tags %}
+{% load static %}
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-    <title>Django Tailwind</title>
+		<title>{% block title %} {% translate "EZ Startup - Easy for Everyone" %}{% endblock %}</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% comment %} <rel rel="stylesheet" type="text/css" src="{% static "css/main.css" %}'> {% endcomment %}
 		{% tailwind_css %}
 	</head>
 
 	<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-		<div class="container mx-auto">
-			<section class="flex items-center justify-center h-screen">
-				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-			</section>
-		</div>
+		<main>
+			<!-- Task bar -->
+			<nav class="block">
+				{% include 'layout/dock.html' %}
+			</nav>
+
+			<!-- Content -->
+			{% block content %}
+			{% endblock %}
+		</main>
 	</body>
 </html>

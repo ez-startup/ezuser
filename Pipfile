@@ -18,6 +18,14 @@ django-oauth-toolkit = "*"
 django-cors-headers = "*"
 reportlab = "*"
 django-tailwind = {extras = ["reload"], version = "*"}
+pillow = "*"
+numpy = "*"
+pandas = "*"
+django-pandas = "*"
+geoip2 = "*"
+maxminddb = "*"
+celery = "*"
+django-celery-beat = "*"
 
 [dev-packages]
 

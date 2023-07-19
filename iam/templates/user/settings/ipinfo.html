@@ -1,0 +1,47 @@
+<!-- my_template.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <h1 class="text-2xl font-bold mb-4">GeoIP Data</h1>
+
+        <div class="mb-4">
+            <h2 class="text-lg font-bold">City Data:</h2>
+            <p>City Name: {{ city_data.city.name }}</p>
+            <p>City Latitude: {{ city_data.location.latitude }}</p>
+            <p>City Longitude: {{ city_data.location.longitude }}</p>
+        </div>
+
+        <div class="mb-4">
+            <h2 class="text-lg font-bold">Country Data:</h2>
+            <p>Country Name: {{ country_data.country.name }}</p>
+            <p>Country ISO Code: {{ country_data.country.iso_code }}</p>
+        </div>
+
+        <div class="mb-4">
+            <h2 class="text-lg font-bold">Device Data:</h2>
+            <p>Computer Name:
+                {% if computer_name %} 
+                    {{ computer_name}}
+                {% else %}
+                    Unavailable
+                {% endif %}
+            </p>
+            <p>IP Address: 
+                {% if client_ip %} 
+                    {{ client_ip }} 
+                {% else %}
+                    No IP address
+                {% endif %}
+
+            </p>
+            <p>
+                MAC Address: 
+                {% if mac_address %}
+                    {{ mac_address }}
+                {% else %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

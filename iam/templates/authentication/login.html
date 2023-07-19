@@ -1,0 +1,54 @@
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="container h-screen mt-10 md:mt-16">
+    <div class="flex justify-center h-screen">
+        <div class="border shadow-md rounded-lg text-slate-500 p-4">
+            <div class="flex justify-center">
+                <h3 id="form-title" class="">LOGIN</h3>
+            </div>
+            <div class="flex justify-center">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <div class="">
+                            <span class=""><i class="fas fa-user"></i></span>
+                        </div>
+                        {{ form.username }}
+                        <!-- <input type="text" name="username" placeholder="Username..." class="form-control"> -->
+                    </div>
+                    <div class="">
+                        <div class="">
+                            <span class=""><i class="fas fa-key"></i></span>
+                        </div>
+                         {{ form.password }}
+                            <!-- <input type="password" name="password" placeholder="Password..." class="form-control" > -->
+                    </div>
+
+                        <div class="flex justify-center mt-3">
+                            <input type="hidden" name="next" value{{ next }}/>
+                             <input class="py-1 px-2 bg-green-600 hover:bg-green-700 rounded-md duration-300 transition-all" type="submit" value="Login">
+                           </div>
+                </form>
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                 {% endfor %}
+            </div>
+    
+            <div class="mt-4">
+                <div class="flex justify-center">
+                    Don't have an account? <a href="{% url 'register' %}" title="register new account" class="mx-2 text-blue-500 font-medium">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var loginForm = document.getElementsByTagName('input')
+    loginForm[1].placeholder='username or email';
+    loginForm[2].placeholder='password';
+</script>
+{% endblock %}

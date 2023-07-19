@@ -16,6 +16,7 @@ load_dotenv()
 import os
 from django.utils.translation import gettext_lazy as _ 
 
+APP_NAME = 'User Manager'
 CSRF_COOKIE_SECURE=False
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +31,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
 
+# Django Tailwind Document https://django-tailwind.readthedocs.io/en/latest/installation.html
+TAILWIND_APP_NAME = 'style'
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 ALLOWED_HOSTS = ['*']
-EXTERNAL_HOSTS = ['127.0.0.1']
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -42,13 +48,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    "django_celery_beat",
     # Apps 
     'usermanager',
+    'productmanager',
     # Django Libraries
     'corsheaders',
     'rosetta',
     # Third party libraries
+    'oauth2_provider',
     'tailwind',
+    'style',
+    'django_browser_reload',
     
 ]
 
@@ -56,12 +68,15 @@ MIDDLEWARE = [
     
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware', # OAuth2 token
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware', # Localization
+    "django_browser_reload.middleware.BrowserReloadMiddleware", # Browser reload auto reload
 ]
 
 
@@ -124,25 +139,39 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Customer authentication
+AUTHENTICATION_BACKENDS = [
+    
+    'oauth2_provider.backends.OAuth2Backend',
+    'iam.authentication.CustomAuthenticationBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
+]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+      'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
 # Communication
 DEFAULT_FROM_EMAIL='webmaster@localhost'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = os.environ.get("TZ")
 USE_I18N = True
-
 USE_TZ = True
 
+LANGUAGE_CODE = 'en'
 LANGUAGES = (
     ('en', _('English')),
-    ('km', _('Khmer')),
+    ('kh', _('Khmer')),
 )
 LOCALE_PATHS = [
-    BASE_DIR / 'locale/',
+    os.path.join(BASE_DIR, 'locale'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -158,7 +187,45 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# GeoIP2 files
+GEOIP_PATH = os.path.join(BASE_DIR, 'geoip', 'database')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'usermanager.user'
+
+# OAUTH2 authentication
+OAUTH2_PROVIDER = {
+    'RESOURCE_SERVER_INTROSPECTION_URL': 'http://localhost:8000/auth/introspect/',
+    'RESOURCE_SERVER_INTROSPECTION_CREDENTIALS': (os.environ.get('rs-id'),os.environ.get('rs-secret')),
+    'SCOPES_BACKEND_CLASS': 'oauth2_provider.scopes.SettingsScopes',
+    'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
+    'SCOPES': {
+        'read': 'Read access to data',
+        'write': 'Write access to data',
+        'profile': 'Access user profile information',
+        'introspection': 'Introspect token scope',
+        'groups': 'Access to your groups'
+    },
+    
+}
+
+# LOGIN 
+LOGIN_URL='/admin/login/' # Authentication of Oauth2
+
+# OPENID authentication
+OAUTH2_PROVIDER_APPLICATION_MODEL='usermanager.AuthApplication'
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_METHODS = (
+    "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+)
+
+
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1",'*']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8001",
+    "http://localhost:8000",
+    "http://127.0.0.1:8001",
+]
